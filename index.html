@@ -236,7 +236,7 @@ async function startCheck(){
     for(const card of cards){
         if(!card.trim()) continue;
 
-        const r = await fetch(`https://oxyincxapi.alwaysdata.net/check/ownerapi.php?kart=${card}`);
+        const response = await fetch("https://oxyincxapi.alwaysdata.net/check/ownerapi.php?kart=" + card);
         const t = await r.text();
 
         const puan = extractPuan(t);
