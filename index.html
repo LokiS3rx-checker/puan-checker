@@ -218,61 +218,69 @@ function extractPuan(text){
 
 /* CHECKER ANA KOD */
     
-async function startCheck(){
+async function startCheck() {
     const lines = document.getElementById('cardsInput').value.trim().split("\n");
     const liveList = document.getElementById('liveList');
     const deadList = document.getElementById('deadList');
-    liveList.innerHTML = '';
-    deadList.innerHTML = '';
+    const startBtn = document.getElementById('startBtn');
+    const totalPuanEl = document.getElementById('liveTotal');
 
-    document.getElementById('startBtn').disabled = true;
-    document.getElementById('startBtn').innerText = "⏳ Bekle kanks…";
+    liveList.innerHTML = "";
+    deadList.innerHTML = "";
+    totalPuanEl.innerHTML = "Toplam Puan: 0";
+
+    // butonu kilitle
+    startBtn.disabled = true;
+    startBtn.innerHTML = "⏳ Bekle kanks…";
 
     let totalPuan = 0;
 
-    for (const card of lines) {
+    for (let card of lines) {
         if (!card.trim()) continue;
 
-        const r = await fetch(`https://oxyincxapi.alwaysdata.net/check/ownerapi.php?kart=${card}`);
-        const t = await r.text();
+        let response = await fetch(`https://oxyincxapi.alwaysdata.net/check/ownerapi.php?kart=${encodeURIComponent(card)}`);
+        let text = await response.text();
 
-        // PUAN AYIKLAMA
-        let puan = 0;
-        if (t.includes("Puan:")) {
+        // --- PUAN AYIKLAMA ---
+        let puan = "0";
+        if (text.includes("Puan:")) {
             try {
-                puan = t.split("Puan:")[1]
-                        .split("TL")[0]
-                        .replace(/[^0-9,]/g, "")
-                        .trim();
-            } catch {
+                puan = text.split("Puan:")[1]
+                           .split("TL")[0]
+                           .replace(/[^0-9,]/g, "")
+                           .trim();
+            } catch (e) {
                 puan = "0";
             }
         }
 
-        // PUAN SAYIYA ÇEVİR
         let numeric = parseFloat(puan.replace(",", "."));
-        totalPuan += isNaN(numeric) ? 0 : numeric;
+        if (!isNaN(numeric)) totalPuan += numeric;
 
-        if (t.includes("APPROVED") || numeric > 0) {
+        // --- LIVE / DEAD AYIRMA ---
+        if (text.includes("APPROVED") || numeric > 0) {
             liveList.innerHTML += `
                 <div class="live-item">
                     <b>${card}</b><br>
                     Puan: ${puan} TL
-                </div>`;
+                </div>
+            `;
         } else {
             deadList.innerHTML += `
                 <div class="dead-item">
                     <b>${card}</b><br>
                     API HATA / RED
-                </div>`;
+                </div>
+            `;
         }
     }
 
-    document.getElementById("liveTotal").innerHTML =
-    "Toplam Puan: " + totalPuan.toFixed(2) + " TL";
+    // toplam puanı göster
+    totalPuanEl.innerHTML = "Toplam Puan: " + totalPuan.toFixed(2) + " TL";
 
-    document.getElementById('startBtn').disabled = false;
-    document.getElementById('startBtn').innerText = "Kontrol Başlat";
+    // butonu geri aç
+    startBtn.disabled = false;
+    startBtn.innerHTML = "Kontrol Başlat";
 }
 
 /* GENERATOR */
